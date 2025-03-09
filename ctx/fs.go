@@ -27,7 +27,7 @@ func getAppConfigHome() (string, error) {
 		xdgHome = home
 	}
 
-	return filepath.Join(xdgHome, "gh-task"), nil
+	return filepath.Join(xdgHome, "gpm"), nil
 }
 
 func getOrgTaskfilesHome(org string) (string, error) {
@@ -93,12 +93,4 @@ func orgDirExists(org string) (bool, string, error) {
 		return false, "", err
 	}
 	return true, home, nil
-}
-
-func rmDirOrg(org string) error {
-	taskfilesDir, err := getOrgTaskfilesHome(org)
-	if err != nil {
-		return err
-	}
-	return os.RemoveAll(taskfilesDir)
 }

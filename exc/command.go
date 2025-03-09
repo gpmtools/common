@@ -1,4 +1,4 @@
-package shell
+package exc
 
 import (
 	"encoding/json"
@@ -7,19 +7,19 @@ import (
 	"github.com/cli/go-gh"
 )
 
-func Cmd(s string) GHCommand {
+func NewCmd(s string) Command {
 	clean := strings.ReplaceAll(s, "gh ", "")
 	ptrs := strings.Split(clean, " ")
-	return GHCommand(ptrs)
+	return Command(ptrs)
 }
 
-func CmdArgs(args ...string) GHCommand {
-	return GHCommand(args)
+func NewCmdArgs(args ...string) Command {
+	return Command(args)
 }
 
-type GHCommand []string
+type Command []string
 
-func (c GHCommand) Exec() (string, error) {
+func (c Command) Exec() (string, error) {
 	out, _, err := gh.Exec(c.StringArray()...)
 	if err != nil {
 		return "", err
@@ -28,7 +28,7 @@ func (c GHCommand) Exec() (string, error) {
 }
 
 // ExecUnmarshal unmarshals the output of the command into the provided interface with JSON
-func (c GHCommand) ExecUnmarshal(i any) error {
+func (c Command) ExecUnmarshal(i any) error {
 	out, err := c.Exec()
 	if err != nil {
 		return err
@@ -37,6 +37,6 @@ func (c GHCommand) ExecUnmarshal(i any) error {
 }
 
 // StringArray returns the command as an array of strings
-func (c GHCommand) StringArray() []string {
+func (c Command) StringArray() []string {
 	return []string(c)
 }

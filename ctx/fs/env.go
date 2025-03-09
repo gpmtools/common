@@ -1,4 +1,4 @@
-package iofs
+package fsio
 
 import (
 	"os"

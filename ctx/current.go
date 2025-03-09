@@ -15,16 +15,15 @@ var ghcliExtensionDeps = []string{
 }
 
 type Current struct {
-	RepoName  string          `json:"repo_name"`
-	RepoOwner string          `json:"repo_owner"`
-	Branch    string          `json:"branch"`
-	Path      string          `json:"path"`
-	PeerDeps  map[string]bool `json:"peerdeps"`
-	Taskfile  string          `json:"taskfile"`
+	RepoName  string `json:"repo_name"`
+	RepoOwner string `json:"repo_owner"`
+	Branch    string `json:"branch"`
+	Path      string `json:"path"`
+	Taskfile  string `json:"taskfile"`
 }
 
 func (c *Current) String() string {
-	return fmt.Sprintf("Current{RepoName: %v, RepoOwner: %v, Branch: %v, Path: %v, PeerDeps: %v, Taskfile: %v}", c.RepoName, c.RepoOwner, c.Branch, c.Path, c.PeerDeps, c.Taskfile)
+	return fmt.Sprintf("Current{RepoName: %v, RepoOwner: %v, Branch: %v, Path: %v,  Taskfile: %v}", c.RepoName, c.RepoOwner, c.Branch, c.Path, c.Taskfile)
 }
 
 // cachedCurrent stores the current context to avoid repeated expensive operations
@@ -44,12 +43,12 @@ func fetchCurrent() (*Current, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	wrkDir, err := WorkingDir()
 	if err != nil {
 		return nil, err
 	}
-	
+
 	currRepo := repo.Name()
 	currOrg := repo.Owner()
 
@@ -68,34 +67,9 @@ func fetchCurrent() (*Current, error) {
 	}
 
 	// Get branch information in the background
-	branchChan := make(chan string, 1)
-	go func() {
-		wrkBranch, err := CurrentBranch()
-		if err != nil {
-			branchChan <- ""
-		} else {
-			branchChan <- wrkBranch
-		}
-	}()
-
-	// Check peer dependencies in the background
-	peerDepsChan := make(chan map[string]bool, 1)
-	go func() {
-		peerDepsChan <- checkPeerDeps()
-	}()
-
-	// Get branch result (with timeout handled by select)
-	var branch string
-	select {
-	case branch = <-branchChan:
-		// Got branch name
-	}
-
-	// Get peer deps result
-	var peerDeps map[string]bool
-	select {
-	case peerDeps = <-peerDepsChan:
-		// Got peer deps
+	branch, err := CurrentBranch()
+	if err != nil {
+		return nil, err
 	}
 
 	// Create and cache the current context
@@ -104,7 +78,6 @@ func fetchCurrent() (*Current, error) {
 		RepoOwner: currOrg,
 		Path:      wrkDir,
 		Branch:    branch,
-		PeerDeps:  peerDeps,
 		Taskfile:  orgPath,
 	}
 
