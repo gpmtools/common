@@ -36,18 +36,18 @@ func initContext(cmdCtx context.Context, cmd *cobra.Command, curr *Current) (*Co
 		return nil, err
 	}
 
-	// Create new context if it doesn't exist
-	orgs, err := filterActiveOrgs()
-	if err != nil {
-		return nil, err
-	}
+	// // Create new context if it doesn't exist
+	// orgs, err := filterActiveOrgs()
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	newCtx := &Context{
 		ConfigHome: configHome,
 		Name:       curr.RepoName,
 		Login:      curr.RepoOwner,
-		Orgs:       orgs,
-		Current:    curr,
+		// Orgs:       orgs,
+		Current: curr,
 	}
 
 	// Create a new context with our value
