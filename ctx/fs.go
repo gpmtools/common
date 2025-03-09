@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/gpmtools/common/ghc"
+	"github.com/gpmtools/common/exc/ghc"
 )
 
 func getAppConfigHome() (string, error) {

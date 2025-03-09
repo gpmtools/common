@@ -3,7 +3,7 @@ package deps
 import (
 	"strings"
 
-	"github.com/gpmtools/common/ghc"
+	"github.com/gpmtools/common/exc"
 )
 
 var peerExtensions = []string{
@@ -12,7 +12,7 @@ var peerExtensions = []string{
 
 func CheckPeerDeps() map[string]bool {
 	res := make(map[string]bool)
-	out, err := ghc.CmdArgs("extension", "list").Exec()
+	out, err := exc.NewCmdArgs("extension", "list").Exec()
 	if err != nil {
 		return res
 	}
@@ -23,7 +23,7 @@ func CheckPeerDeps() map[string]bool {
 			continue
 		} else {
 			res[ext] = false
-			ghc.CmdArgs("extension", "install", ext).Exec()
+			exc.NewCmdArgs("extension", "install", ext).Exec()
 		}
 	}
 	return res
