@@ -1,4 +1,4 @@
-package exc
+package types
 
 import (
 	"encoding/json"
